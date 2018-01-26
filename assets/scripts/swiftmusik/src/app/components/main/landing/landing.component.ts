@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+
+import { VIDEO_API_URL } from 'app/constants/api';
 
 @Component({
   selector: 'app-landing',
@@ -7,9 +10,28 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LandingComponent implements OnInit {
 
-  constructor() { }
+  queue: any;
+  queueError = false;
+
+  constructor(
+    private http: HttpClient
+    ) { }
 
   ngOnInit() {
+    this.queue = [];
+    this.loadQueue();
+  }
+
+  loadQueue() {
+    this.http.get(`${VIDEO_API_URL()}`)
+      .subscribe(
+        result => {
+          this.queue = result;
+        },
+        error => {
+          this.queueError = true;
+        }
+      )
   }
 
 }

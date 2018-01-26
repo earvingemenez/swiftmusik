@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UIRouterModule } from '@uirouter/angular';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 
@@ -17,6 +18,7 @@ import { APP_STATES } from 'app/states/index';
   imports: [
     BrowserModule,
     AngularFontAwesomeModule,
+    HttpClientModule,
     NgbModule.forRoot(),
 
     UIRouterModule.forRoot({
