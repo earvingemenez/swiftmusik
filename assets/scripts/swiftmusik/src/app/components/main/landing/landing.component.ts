@@ -3,6 +3,8 @@ import { HttpClient } from '@angular/common/http';
 
 import { VIDEO_API_URL } from 'app/constants/api';
 
+import { Video } from 'app/structs/video.structs';
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
@@ -10,8 +12,12 @@ import { VIDEO_API_URL } from 'app/constants/api';
 })
 export class LandingComponent implements OnInit {
 
+  video = new Video('');
   queue: any;
   queueError = false;
+  submitSuccess = false;
+  errors = {};
+
 
   constructor(
     private http: HttpClient
@@ -35,7 +41,15 @@ export class LandingComponent implements OnInit {
   }
 
   onAddVideoSubmit() {
-    console.log('wow')
+    this.http.post(`${VIDEO_API_URL()}`)
+      .subscribe(
+        result => {
+          this.submitSuccess = true;
+        },
+        error => {
+          this.errors = error.error;
+        }
+      )
   }
 
 }
