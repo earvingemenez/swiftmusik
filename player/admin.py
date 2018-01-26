@@ -1,3 +1,13 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Video
+
+
+class VideoAdmin(admin.ModelAdmin):
+    '''
+        Admin View for Video
+    '''
+    list_display = ('url', 'parsed_id', 'parsed_title', 'status', 'date_added', )
+
+
+admin.site.register(Video, VideoAdmin)
