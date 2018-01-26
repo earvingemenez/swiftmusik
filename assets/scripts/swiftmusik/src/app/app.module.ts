@@ -3,11 +3,14 @@ import { NgModule } from '@angular/core';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { UIRouterModule } from '@uirouter/angular';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { CookieService } from 'ngx-cookie-service';
 
 import { AppComponent } from './app.component';
 
 import { ComponentsModule } from 'app/components/components.module';
+
+import { CsrfService } from 'app/commons/services/interceptors/csrf.service';
 
 import { APP_STATES } from 'app/states/index';
 
@@ -29,7 +32,10 @@ import { APP_STATES } from 'app/states/index';
 
     ComponentsModule,
   ],
-  providers: [],
+  providers: [
+    CookieService,
+    { provide: HTTP_INTERCEPTORS, useClass: CsrfService, multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

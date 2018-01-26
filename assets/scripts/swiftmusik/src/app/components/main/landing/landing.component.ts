@@ -41,10 +41,14 @@ export class LandingComponent implements OnInit {
   }
 
   onAddVideoSubmit() {
-    this.http.post(`${VIDEO_API_URL()}`)
+    this.errors = {};
+    this.submitSuccess = false;
+
+    this.http.post(`${VIDEO_API_URL()}`, this.video)
       .subscribe(
         result => {
           this.submitSuccess = true;
+          this.loadQueue();
         },
         error => {
           this.errors = error.error;

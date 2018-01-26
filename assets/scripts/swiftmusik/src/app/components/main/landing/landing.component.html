@@ -7,6 +7,9 @@
   <div class="col-sm-12 col-md-4">
     <h3>Add a Video</h3>
     <form (ngSubmit)="onAddVideoSubmit()" #addVideoForm>
+      <ul *ngIf="errors.url" class="list-unstyled">
+        <li *ngFor="let error of errors.url"><small class="text-danger">{{ error }}</small></li>
+      </ul>
       <div class="input-group">
         <input type="text"
           [(ngModel)]="video.url"
