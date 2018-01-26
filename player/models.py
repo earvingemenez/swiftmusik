@@ -19,6 +19,7 @@ class Video(models.Model):
     url = models.CharField(max_length=255)
     parsed_id = models.CharField(max_length=255)
     parsed_title = models.CharField(max_length=255, default='No Title')
+    parsed_thumb = models.URLField()
 
     status = models.CharField(choices=STATUS_CHOICES, default=QUEUED, max_length=15)
 

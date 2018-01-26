@@ -28,7 +28,8 @@
     <ul class="list-group">
       <li class="list-group-item"
         *ngFor="let vid of queue">
-        {{ vid.parsed_title }}
+        <img class="img-thumbnail" src="{{ vid.parsed_thumb }}" alt="{{ vid.parsed_title }}">
+        <p>{{ vid.parsed_title }}</p>
       </li>
     </ul>
 

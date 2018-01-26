@@ -131,3 +131,9 @@ STATIC_ROOT = "static_cdn"
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
+
+try:
+    from .local_settings import *
+except ImportError as e:
+    if "local_settings" not in str(e):
+        raise e
