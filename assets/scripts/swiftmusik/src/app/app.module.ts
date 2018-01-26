@@ -5,6 +5,8 @@ import { UIRouterModule } from '@uirouter/angular';
 
 import { AppComponent } from './app.component';
 
+import { ComponentsModule } from 'app/components/components.module';
+
 import { APP_STATES } from 'app/states/index';
 
 @NgModule({
@@ -15,7 +17,13 @@ import { APP_STATES } from 'app/states/index';
     BrowserModule,
     NgbModule.forRoot(),
 
-    UIRouterModule.forRoot({ states: APP_STATES, useHash: true })
+    UIRouterModule.forRoot({
+      states: APP_STATES,
+      useHash: false,
+      otherwise: '/not-found',
+    }),
+
+    ComponentsModule,
   ],
   providers: [],
   bootstrap: [AppComponent]
