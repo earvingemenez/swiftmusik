@@ -1,5 +1,14 @@
 {% extends "base.html" %}
+{% load staticfiles %}
 
 {% block content %}
-  <h1>Hello World</h1>
+
+  <app-root></app-root>
+
+  <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/inline.bundle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/polyfills.bundle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/styles.bundle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/vendor.bundle.js' %}"></script>
+  <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/main.bundle.js' %}"></script>
+
 {% endblock content %}
