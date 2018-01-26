@@ -20,7 +20,7 @@ class Video(models.Model):
     parsed_id = models.CharField(max_length=255)
     parsed_title = models.CharField(max_length=255, default='No Title')
 
-    status = models.CharField(choices=STATUS_CHOICES, default=QUEUED)
+    status = models.CharField(choices=STATUS_CHOICES, default=QUEUED, max_length=15)
 
     date_added = models.DateTimeField(auto_now_add=True)
     date_modified = models.DateTimeField(auto_now=True)

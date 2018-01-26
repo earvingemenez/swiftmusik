@@ -30,7 +30,7 @@ ALLOWED_HOSTS = []
 
 # Application definition
 
-INSTALLED_APPS = [
+THIRD_PARTY_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -40,6 +40,12 @@ INSTALLED_APPS = [
 
     'rest_framework'
 ]
+
+PROJECT_APPS = [
+    'player'
+]
+
+INSTALLED_APPS = THIRD_PARTY_APPS + PROJECT_APPS
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
