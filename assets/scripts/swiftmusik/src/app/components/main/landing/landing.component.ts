@@ -34,4 +34,8 @@ export class LandingComponent implements OnInit {
       )
   }
 
+  onAddVideoSubmit() {
+    console.log('wow')
+  }
+
 }
