@@ -8,10 +8,12 @@ from player.models import Video
 
 
 class VideoSerializer(serializers.ModelSerializer):
+    url = serializers.CharField(required=False)
+
     class Meta:
         model = Video
-        fields = ('url', 'parsed_id', 'parsed_title', 'parsed_thumb', 'status', 'date_added', )
-        read_only_fields = ('parsed_id', 'parsed_title', 'parsed_thumb', 'status', 'date_added', )
+        fields = ('id', 'url', 'parsed_id', 'parsed_title', 'parsed_thumb', 'status', 'date_added', )
+        read_only_fields = ('id' ,'parsed_id', 'parsed_title', 'parsed_thumb', 'date_added', )
 
     def create(self, validated_data):
         pattern = '((?<=(v|V)/)|(?<=be/)|(?<=(\?|\&)v=)|(?<=embed/))([\w-]+)'

@@ -23,8 +23,6 @@ export class LandingComponent implements OnInit {
   submitSuccess = false;
   errors = {};
 
-  ids = ['gk_Gmz30EVI', 'Ynts58qy0bE', ];
-
   playerOptions: NgxY2PlayerOptions = {
     videoId: null,
     height: 500,
@@ -73,15 +71,24 @@ export class LandingComponent implements OnInit {
   }
 
   getNextVideoId() {
-    const last = R.last(this.ids);
-    const newList = R.init(this.ids);
-    this.ids = newList;
+    const last = R.last(this.queue);
+    const newList = R.init(this.queue);
+    this.queue = newList;
     this.ref.detectChanges();
     return last;
   }
 
-  playVideo(player, id) {
-    player.loadVideoById(id);
+  playVideo(player, videoObj) {
+    // Tell api that we already updated our playlist. Get an updated version
+    this.http.put(`${VIDEO_API_URL()}${videoObj.id}/`, {status: 'finished'})
+      .subscribe(
+        result => {
+          this.loadQueue();
+        }
+      )
+
+    // Update video player
+    player.loadVideoById(R.prop('parsed_id', videoObj));
   }
 
   onVideoReady() {
@@ -89,7 +96,6 @@ export class LandingComponent implements OnInit {
     const jplay = R.prop('j', this.videoPlayer.videoPlayer);
     const playerState = R.prop('playerState', jplay);
     const playerInstance = this.videoPlayer.videoPlayer;
-    const playlist = this.ids;
 
     if (playerState === -1 || playerState === 5) {
       this.playVideo(playerInstance, this.getNextVideoId())
