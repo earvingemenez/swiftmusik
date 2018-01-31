@@ -5,6 +5,7 @@ import { UIRouterModule } from '@uirouter/angular';
 import { AngularFontAwesomeModule } from 'angular-font-awesome';
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { CookieService } from 'ngx-cookie-service';
+import { NgxY2PlayerModule } from 'ngx-y2-player';
 
 import { AppComponent } from './app.component';
 
@@ -22,6 +23,7 @@ import { APP_STATES } from 'app/states/index';
     BrowserModule,
     AngularFontAwesomeModule,
     HttpClientModule,
+    NgxY2PlayerModule.forRoot(),
     NgbModule.forRoot(),
 
     UIRouterModule.forRoot({

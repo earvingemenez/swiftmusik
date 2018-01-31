@@ -1,9 +1,14 @@
 <div class="row">
   <div class="col-sm-12 col-md-8">
     <div class="player-placeholder d-flex justify-content-center align-items-center">
-      <span class="loading-title">Loading Player...</span>
+      <ngx-y2-player
+        #videoPlayer
+        (ready)="onVideoReady($event)"
+        [playerOptions]="playerOptions">
+      </ngx-y2-player>
     </div>
   </div>
+  <hr>
   <div class="col-sm-12 col-md-4">
     <h3>Add a Video</h3>
     <form (ngSubmit)="onAddVideoSubmit()" #addVideoForm>
