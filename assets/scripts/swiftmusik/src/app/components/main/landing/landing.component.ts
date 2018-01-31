@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
@@ -23,9 +23,10 @@ export class LandingComponent implements OnInit {
   submitSuccess = false;
   errors = {};
 
-  ids = ['Ynts58qy0bE', 'gk_Gmz30EVI', ];
+  ids = ['gk_Gmz30EVI', 'Ynts58qy0bE', ];
 
   playerOptions: NgxY2PlayerOptions = {
+    videoId: null,
     height: 500,
     width: 730,
     playerVars: {
@@ -34,7 +35,8 @@ export class LandingComponent implements OnInit {
   };
 
   constructor(
-    private http: HttpClient
+    private http: HttpClient,
+    private ref: ChangeDetectorRef
     ) { }
 
   ngOnInit() {
@@ -70,8 +72,12 @@ export class LandingComponent implements OnInit {
       )
   }
 
-  getNextVideoId(playlist) {
-    return R.last(playlist);
+  getNextVideoId() {
+    const last = R.last(this.ids);
+    const newList = R.init(this.ids);
+    this.ids = newList;
+    this.ref.detectChanges();
+    return last;
   }
 
   playVideo(player, id) {
@@ -79,20 +85,20 @@ export class LandingComponent implements OnInit {
   }
 
   onVideoReady() {
-    const playVid = this.playVideo;
-    const nextVid = this.getNextVideoId;
-    const playerState = this.videoPlayer.videoPlayer.j.playerState;
+    const that = this;
+    const jplay = R.prop('j', this.videoPlayer.videoPlayer);
+    const playerState = R.prop('playerState', jplay);
     const playerInstance = this.videoPlayer.videoPlayer;
     const playlist = this.ids;
 
     if (playerState === -1 || playerState === 5) {
-      playVid(playerInstance, nextVid(playlist))
+      this.playVideo(playerInstance, this.getNextVideoId())
     }
 
     this.videoPlayer.videoPlayer.addEventListener('onStateChange', (event$) => {
-      if (event$.data === 0) {
+      if (R.prop('data', event$) === 0) {
         // Video Already Stopped playing. Play next video
-        playVid(playerInstance, nextVid(playlist));
+        that.playVideo(playerInstance, that.getNextVideoId());
       }
     })
   }
