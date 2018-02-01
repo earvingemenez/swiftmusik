@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { Component, OnInit, ViewChild, ChangeDetectorRef, Inject } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, Inject, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
@@ -12,7 +12,7 @@ import { Video } from 'app/structs/video.structs';
   templateUrl: './landing.component.html',
   styleUrls: ['./landing.component.scss']
 })
-export class LandingComponent implements OnInit {
+export class LandingComponent implements OnInit, OnDestroy {
   @ViewChild('videoPlayer') videoPlayer: NgxY2PlayerComponent;
 
   ENDED_STATE = 0;
@@ -22,6 +22,8 @@ export class LandingComponent implements OnInit {
   queueError = false;
   submitSuccess = false;
   errors = {};
+  pusher = null;
+  channel = null;
 
   playerOptions: NgxY2PlayerOptions = {
     videoId: null,
@@ -42,7 +44,26 @@ export class LandingComponent implements OnInit {
     this.queue = [];
     this.loadQueue();
 
-    console.log((<any>window).Pusher, 'pus')
+    this.setupPusher();
+  }
+
+  ngOnDestroy() {
+    this.pusher.disconnect();
+  }
+
+  setupPusher() {
+    // TODO: Change this to be dynamic/from the server
+      this.pusher = new (<any>window).Pusher('7a2ad5e829d1ab529256', {
+        cluster: 'ap1',
+        encrypted: true
+      });
+
+      const that = this;
+
+      this.channel = this.pusher.subscribe('sk-pusher-channel-afjnw21a');
+      this.channel.bind('VIDEO_ADD', function(data) {
+        that.loadQueue();
+      });
   }
 
   loadQueue() {
@@ -66,7 +87,6 @@ export class LandingComponent implements OnInit {
       .subscribe(
         result => {
           this.submitSuccess = true;
-          this.loadQueue();
         },
         error => {
           this.errors = error.error;
