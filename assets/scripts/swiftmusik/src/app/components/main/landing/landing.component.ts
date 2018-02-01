@@ -73,6 +73,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       .subscribe(
         result => {
           this.queue = result;
+          this.checkPlayingVideo();
           this.ref.detectChanges();
         },
         error => {
@@ -95,6 +96,18 @@ export class LandingComponent implements OnInit, OnDestroy {
           this.errors = error.error;
         }
       )
+  }
+
+  checkPlayingVideo() {
+    console.log()
+    const that = this;
+    const jplay = R.prop('j', this.videoPlayer.videoPlayer);
+    const playerState = R.prop('playerState', jplay);
+    const playerInstance = this.videoPlayer.videoPlayer;
+
+    if (playerState === -1 || playerState === 5 || playerState === 0) {
+      this.playVideo(playerInstance, this.getNextVideoId())
+    }
   }
 
   getNextVideoId() {
