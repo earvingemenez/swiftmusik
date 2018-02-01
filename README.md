@@ -1,3 +1,5 @@
+![SwiftMusik](./docs/img/logo.png "SwiftMusik")
+
 # Swiftmusik
 
 Music player manager.
