@@ -37,3 +37,24 @@ class Video(models.Model):
         pusher_client = pusher.Pusher(**settings.PUSHER_CREDENTIALS)
 
         pusher_client.trigger(settings.PUSHER_CHANNEL, 'VIDEO_ADD', {'video_added': 'fetch_some_buddy'})
+
+
+class Vote(models.Model):
+    UP = 'up'
+    DOWN = 'down'
+
+    TYPE_CHOICES = (
+        (UP, 'Up'),
+        (DOWN, 'Down')
+    )
+
+    video = models.ForeignKey(Video, on_delete=models.CASCADE, related_name='votes')
+    vote_type = models.CharField(max_length=5, choices=TYPE_CHOICES, default=DOWN)
+
+    date_added = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return "{} - {}".format(self.id, self.video)
+
+    def save(self, *args, **kwargs):
+        super(Video, self).save(*args, **kwargs)

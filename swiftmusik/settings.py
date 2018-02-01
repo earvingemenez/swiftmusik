@@ -142,6 +142,8 @@ PUSHER_CREDENTIALS = {
 
 PUSHER_CHANNEL = 'sk-pusher-channel-afjnw21a'
 
+MAX_DOWNVOTE_LIMIT = 5
+
 try:
     from .local_settings import *
 except ImportError as e:
