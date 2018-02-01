@@ -47,6 +47,7 @@ export class LandingComponent implements OnInit {
       .subscribe(
         result => {
           this.queue = result;
+          this.ref.detectChanges();
         },
         error => {
           this.queueError = true;
@@ -71,24 +72,26 @@ export class LandingComponent implements OnInit {
   }
 
   getNextVideoId() {
-    const last = R.last(this.queue);
-    const newList = R.init(this.queue);
+    const first = R.head(this.queue);
+    const newList = R.drop(1, this.queue);
     this.queue = newList;
     this.ref.detectChanges();
-    return last;
+    return first;
   }
 
   playVideo(player, videoObj) {
     // Tell api that we already updated our playlist. Get an updated version
-    this.http.put(`${VIDEO_API_URL()}${videoObj.id}/`, {status: 'finished'})
-      .subscribe(
-        result => {
-          this.loadQueue();
-        }
-      )
+    if (videoObj) {
+      this.http.put(`${VIDEO_API_URL()}${R.prop('id', videoObj)}/`, {status: 'finished'})
+        .subscribe(
+          result => {
+            this.loadQueue();
+          }
+        )
 
-    // Update video player
-    player.loadVideoById(R.prop('parsed_id', videoObj));
+      // Update video player
+      player.loadVideoById(R.prop('parsed_id', videoObj));
+    }
   }
 
   onVideoReady() {

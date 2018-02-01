@@ -8,7 +8,7 @@ from .serializers import VideoSerializer
 
 
 class VideoViewSet(viewsets.ModelViewSet):
-    queryset = Video.objects.all()
+    queryset = Video.objects.filter(status=Video.QUEUED)
     serializer_class = VideoSerializer
     permission_classes = (permissions.AllowAny, )
     lookup_field = 'id'

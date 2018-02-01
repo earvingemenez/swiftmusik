@@ -30,7 +30,10 @@
     <hr>
 
     <h3>Queue</h3>
-    <ul class="list-group">
+    <div *ngIf="!queue.length" class="alert alert-info">
+      <span>There are no videos queued up. Add some!</span>
+    </div>
+    <ul *ngIf="queue.length" class="list-group">
       <li class="list-group-item"
         *ngFor="let vid of queue">
         <div class="row">
@@ -42,8 +45,6 @@
             <span class="badge badge-secondary">{{ vid.parsed_id }}</span>
           </div>
         </div>
-
-
       </li>
     </ul>
   </div>
