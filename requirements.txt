@@ -2,3 +2,4 @@ Django==2.0.1
 djangorestframework==3.7.7
 pytz==2017.3
 pusher==1.7.3
+psycopg2==2.7.3.2
