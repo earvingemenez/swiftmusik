@@ -20,26 +20,28 @@ class VideoSerializer(serializers.ModelSerializer):
         compiled_pattern = re.compile(pattern)
 
         url = validated_data.get('url', None)
-        if url:
-            # Parse URL for video ID
-            vid_id = compiled_pattern.search(url)
-            validated_data['parsed_id'] = vid_id.group(0)
+        try:
+            if url:
+                # Parse URL for video ID
+                vid_id = compiled_pattern.search(url)
+                validated_data['parsed_id'] = vid_id.group(0)
 
-        # Fetch video data
-        new_params = {
-            "part": "snippet",
-            "id": vid_id.group(0),
-            "key": settings.YOUTUBE_API_KEY
-        }
-        new_params_str = urlencode(new_params)
-        updated_api_url = "{}?{}".format(settings.YOUTUBE_VIDEO_API_URL, new_params_str)
-        fetch_data = requests.get(updated_api_url)
-        if fetch_data.status_code == 200:
-            fetch_json = fetch_data.json()
+            # Fetch video data
+            new_params = {
+                "part": "snippet",
+                "id": vid_id.group(0),
+                "key": settings.YOUTUBE_API_KEY
+            }
+            new_params_str = urlencode(new_params)
+            updated_api_url = "{}?{}".format(settings.YOUTUBE_VIDEO_API_URL, new_params_str)
+            fetch_data = requests.get(updated_api_url)
+            if fetch_data.status_code == 200:
+                fetch_json = fetch_data.json()
 
-            validated_data['parsed_title'] = fetch_json.get('items')[0].get('snippet').get('title')
-            validated_data['parsed_thumb'] = fetch_json.get('items')[0].get('snippet').get('thumbnails').get('default').get('url')
+                validated_data['parsed_title'] = fetch_json.get('items')[0].get('snippet').get('title')
+                validated_data['parsed_thumb'] = fetch_json.get('items')[0].get('snippet').get('thumbnails').get('default').get('url')
 
-        video = Video.objects.create(**validated_data)
-
+            video = Video.objects.create(**validated_data)
+        except Exception as e:
+            raise serializers.ValidationError({'url': ['Invalid Youtube URL', ]})
         return validated_data

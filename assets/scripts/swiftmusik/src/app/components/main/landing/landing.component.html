@@ -42,7 +42,14 @@
           </div>
           <div class="col-6">
             <p>{{ vid.parsed_title }}</p>
-            <span class="badge badge-secondary">{{ vid.parsed_id }}</span>
+            <p>
+              <small>Remove Votes: <span class="badge badge-secondary">{{ vid.remove_votes }}</span></small>
+            </p>
+            <p>
+              <button class="btn btn-sm btn-warning">
+                Vote To Remove
+              </button>
+            </p>
           </div>
         </div>
       </li>

@@ -87,6 +87,7 @@ export class LandingComponent implements OnInit, OnDestroy {
       .subscribe(
         result => {
           this.submitSuccess = true;
+          this.video = new Video('');
         },
         error => {
           this.errors = error.error;
