@@ -12,6 +12,7 @@ import { AppComponent } from './app.component';
 import { ComponentsModule } from 'app/components/components.module';
 
 import { CsrfService } from 'app/commons/services/interceptors/csrf.service';
+import { WindowRef } from 'app/commons/services/references/window.service';
 
 import { APP_STATES } from 'app/states/index';
 
@@ -35,6 +36,7 @@ import { APP_STATES } from 'app/states/index';
     ComponentsModule,
   ],
   providers: [
+    WindowRef,
     CookieService,
     { provide: HTTP_INTERCEPTORS, useClass: CsrfService, multi: true },
   ],

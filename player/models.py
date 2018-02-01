@@ -1,4 +1,6 @@
+import pusher
 from django.db import models
+from django.conf import settings
 
 
 class Video(models.Model):
@@ -28,3 +30,10 @@ class Video(models.Model):
 
     def __str__(self):
         return "{} - {}".format(self.parsed_title, self.url)
+
+    def save(self, *args, **kwargs):
+        super(Video, self).save(*args, **kwargs)
+
+        pusher_client = pusher.Pusher(**settings.PUSHER_CREDENTIALS)
+
+        pusher_client.trigger(settings.PUSHER_CHANNEL, 'VIDEO_ADD', {'video_added': 'fetch_some_buddy'})

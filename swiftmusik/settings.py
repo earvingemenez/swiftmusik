@@ -132,6 +132,16 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
+PUSHER_CREDENTIALS = {
+    'app_id': '467124',
+    'key': '7a2ad5e829d1ab529256',
+    'secret': 'dde11b541ae586f860ea',
+    'cluster': 'ap1',
+    'ssl': True
+}
+
+PUSHER_CHANNEL = 'sk-pusher-channel-afjnw21a'
+
 try:
     from .local_settings import *
 except ImportError as e:

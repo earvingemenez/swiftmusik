@@ -1,5 +1,5 @@
 import * as R from 'ramda';
-import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
@@ -34,12 +34,15 @@ export class LandingComponent implements OnInit {
 
   constructor(
     private http: HttpClient,
-    private ref: ChangeDetectorRef
+    private ref: ChangeDetectorRef,
+    @Inject('Window') window: Window
     ) { }
 
   ngOnInit() {
     this.queue = [];
     this.loadQueue();
+
+    console.log((<any>window).Pusher, 'pus')
   }
 
   loadQueue() {
