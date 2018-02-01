@@ -133,6 +133,8 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "assets"),
 ]
 
+PROTOCOL = 'http://'
+
 PUSHER_CREDENTIALS = {
     'app_id': '467124',
     'key': '7a2ad5e829d1ab529256',

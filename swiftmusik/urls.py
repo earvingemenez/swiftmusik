@@ -22,6 +22,7 @@ from django.conf.urls.static import static
 from rest_framework import routers
 
 from player.views import VideoViewSet
+from home.views import HomeView
 
 
 router = routers.SimpleRouter()
@@ -31,5 +32,5 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     path('api/', include(router.urls)),
-    re_path(r'^(.*)$', TemplateView.as_view(template_name='home/index.html'))
+    re_path(r'^(.*)$', HomeView.as_view())
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

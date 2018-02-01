@@ -7,6 +7,8 @@ import { VIDEO_API_URL } from 'app/constants/api';
 
 import { Video } from 'app/structs/video.structs';
 
+import { PUSHER_CHANNEL } from 'app/constants/api.ts';
+
 @Component({
   selector: 'app-landing',
   templateUrl: './landing.component.html',
@@ -60,7 +62,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
       const that = this;
 
-      this.channel = this.pusher.subscribe('sk-pusher-channel-afjnw21a');
+      this.channel = this.pusher.subscribe(`${PUSHER_CHANNEL}`);
       this.channel.bind('VIDEO_ADD', function(data) {
         that.loadQueue();
       });

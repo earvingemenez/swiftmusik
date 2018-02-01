@@ -5,6 +5,11 @@
 
   <app-root></app-root>
 
+  <script type="text/javascript">
+    window.base_url = '{{ base_url }}';
+    window.pusher_channel = '{{ pusher_channel }}';
+  </script>
+
   <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/inline.bundle.js' %}"></script>
   <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/polyfills.bundle.js' %}"></script>
   <script type="text/javascript" src="{% static 'scripts/swiftmusik/dist/styles.bundle.js' %}"></script>
