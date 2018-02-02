@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { NgxY2PlayerComponent, NgxY2PlayerOptions } from 'ngx-y2-player';
 
 import { VIDEO_API_URL } from 'app/constants/api';
+import { LogsService } from 'app/commons/services/playlist/logs.service';
 
 import { Video } from 'app/structs/video.structs';
 
@@ -21,6 +22,7 @@ export class LandingComponent implements OnInit, OnDestroy {
 
   video = new Video('');
   queue: any;
+  curVideo: any;
   queueError = false;
   submitSuccess = false;
   errors = {};
@@ -39,6 +41,7 @@ export class LandingComponent implements OnInit, OnDestroy {
   constructor(
     private http: HttpClient,
     private ref: ChangeDetectorRef,
+    private logs: LogsService,
     @Inject('Window') window: Window
     ) { }
 
@@ -106,7 +109,7 @@ export class LandingComponent implements OnInit, OnDestroy {
     const playerInstance = this.videoPlayer.videoPlayer;
 
     if (playerState === -1 || playerState === 5 || playerState === 0) {
-      this.playVideo(playerInstance, this.getNextVideoId())
+      this.playVideo(playerInstance, false)
     }
   }
 
@@ -118,7 +121,11 @@ export class LandingComponent implements OnInit, OnDestroy {
     return first;
   }
 
-  playVideo(player, videoObj) {
+  getVideoObj(id) {
+    return R.find(R.propEq('id', id))(this.queue);
+  }
+
+  playVideo1(player, videoObj) {
     // Tell api that we already updated our playlist. Get an updated version
     if (videoObj) {
       this.http.put(`${VIDEO_API_URL()}${R.prop('id', videoObj)}/`, {status: 'finished'})
@@ -133,6 +140,67 @@ export class LandingComponent implements OnInit, OnDestroy {
     }
   }
 
+  /* UPDATE VIDEO DETAILS
+   * @desc : update video detail status. it also updates the queue
+   */
+  updateVideo(curVideo, status) {
+
+    this.http.put(`${VIDEO_API_URL()}${R.prop('id', curVideo)}/`, {status: status})
+      .subscribe(
+        result => {
+          this.loadQueue();
+        }
+      )
+  }
+
+  /* LOAD THE VIDEO IN THE CORRECT TIMELINE
+   */
+  playVideoGoTo(player, curVideo) {
+    this.logs.addLog({video: curVideo.id, action: 'play'});
+    player.loadVideoById(R.prop('parsed_id', curVideo));
+  }
+
+  playVideo(player, next) {
+
+    if (next) {
+      this.curVideo = this.getNextVideoId();
+      console.log(this.curVideo);
+
+      //this.updateVideo(this.curVideo, 'finished');
+
+      // automatically play the next video
+      this.playVideoGoTo(player, this.curVideo);
+
+
+    } else {
+      // get the latest log
+      this.logs.getLatest()
+        .subscribe(
+          result => {
+
+            if (result) {
+
+              console.log("WHAT",result);
+              this.curVideo = this.getVideoObj(result.video);
+
+              // check if the video is still playing or finished
+              if (result.action === 'play') {
+                this.updateVideo(this.curVideo, 'playing');
+                // update queue
+                this.getNextVideoId();
+
+                // calculate the current time interval
+                this.playVideoGoTo(this.curVideo);
+
+              } else if (result.action === 'finish') {
+                // play the next video
+              }
+            }
+          }
+        )
+    }
+  }
+
   onVideoReady() {
     const that = this;
     const jplay = R.prop('j', this.videoPlayer.videoPlayer);
@@ -140,13 +208,27 @@ export class LandingComponent implements OnInit, OnDestroy {
     const playerInstance = this.videoPlayer.videoPlayer;
 
     if (playerState === -1 || playerState === 5) {
-      this.playVideo(playerInstance, this.getNextVideoId())
+      this.playVideo(playerInstance, true);
     }
 
     this.videoPlayer.videoPlayer.addEventListener('onStateChange', (event$) => {
       if (R.prop('data', event$) === 0) {
         // Video Already Stopped playing. Play next video
-        that.playVideo(playerInstance, that.getNextVideoId());
+        this.logs.addLog({video: this.curVideo.id, action: 'finish'})
+          .subscribe(
+            resp => {
+              this.http.put(`${VIDEO_API_URL()}${R.prop('id', this.curVideo)}/`, {status: 'finished'})
+                .subscribe(
+                  result => {
+                    this.curVideo = undefined;
+                    this.loadQueue();
+                    console.log(this.queue);
+                    that.playVideo(playerInstance, true);
+                }
+              )
+
+            }
+          );
       }
     })
   }
