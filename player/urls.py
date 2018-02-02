@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import VideoViewSet, PlaylistLogViewSet
+from .views import VideoViewSet, PlaylistLogViewSet, Playlist
 
 
 urlpatterns = [
@@ -11,6 +11,17 @@ urlpatterns = [
         'post': 'create',
         'put': 'update',
     }), name='videos'),
+
+    path('playlist/', Playlist.as_view({
+        'get': 'list',
+    }), name='playlist'),
+    path('playlist/current/', Playlist.as_view({
+        'get': 'current',
+    }), name='playlist'),
+    path('playlist/next/', Playlist.as_view({
+        'get': 'next',
+    }), name='playlist'),
+
 
     path('playlist/logs/', PlaylistLogViewSet.as_view({
         'get': 'get_latest',

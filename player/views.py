@@ -1,17 +1,41 @@
 from django.shortcuts import get_object_or_404
+from django.utils import timezone
 
 from rest_framework import viewsets, permissions
 from rest_framework.response import Response
 
-from .models import Video
+from .models import Video, PlaylistLog
 from .serializers import VideoSerializer, PlaylistLogSerializer
 
 
-# class VideoViewSet(viewsets.ModelViewSet):
-#     queryset = Video.objects.filter(status=Video.QUEUED)
-#     serializer_class = VideoSerializer
-#     permission_classes = (permissions.AllowAny, )
-#     lookup_field = 'id'
+
+class Playlist(viewsets.ViewSet):
+    """ playlist view
+    """
+    def list(self, *args, **kwargs):
+        serializer = VideoSerializer(
+            Video.objects.filter(status__in=[Video.PLAYING, Video.QUEUED]), many=True)
+
+        return Response(serializer.data, status=200)
+
+    def current(self, *args, **kwargs):
+        latest_log = PlaylistLog.objects.filter(action=PlaylistLog.PLAY).last()
+
+        return Response({
+            'log_id': latest_log.id,
+            'video_code': latest_log.video.parsed_id,
+            'video_id': latest_log.video.id,
+            'timestamp': latest_log.timestamp,
+            'now': str(timezone.now().time()),
+
+        } if latest_log else {} , status=200)
+
+    def next(self, *args, **kwargs):
+        video = Video.objects.filter(status=Video.QUEUED).order_by('-date_added').last()
+        serializer = VideoSerializer(video)
+
+        return Response(serializer.data, status=200)
+
 
 class VideoViewSet(viewsets.ViewSet):
     serializer_class = VideoSerializer
